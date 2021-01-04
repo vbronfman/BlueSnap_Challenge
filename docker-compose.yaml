@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+  jenkins:
+    #image: jenkins/jenkins:lts
+    build: ./jenkins
+    ports:
+      - ${JENKINS_PORT}:8080
+      - 50000:50000
+    environment:
+      - JENKINS_USER=admin 
+      - JENKINS_PASS=admin
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.footerURL=http://Bluesnap_Challenge.io   
+    # uncomment for docker in docker
+    privileged: true
+    volumes:
+        # enable persistent volume (warning: make sure that the local jenkins_home folder is created)
+       # - /var/wisestep/data/jenkins_home:/var/jenkins_home
+        - /var/jenkins_home
+        - ./deploy:/tmp/deploy
+        # mount docker sock and binary for docker in docker (only works on linux)
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /usr/bin/docker:/usr/bin/docker
+
+  git-server:
+    build:
+      dockerfile: gitserver.Dockerfile
+      context: ./gitserver
+    restart: always
+    ports:
+      - "${GIT_HTTP_PORT}:80"
+    environment:
+      - JENKINS_SERVER=${JENKINS_SERVER}
+      - JENKINS_PORT=${JENKINS_PORT}
+      - GIT_SERVER=${GIT_SERVER}
+    volumes:
+      - ./gitserver/repos:/var/www/git
+      - ./deploy:/var/www/html
