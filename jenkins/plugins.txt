@@ -9,7 +9,6 @@ cloudbees-folder:latest
 configuration-as-code:latest
 credentials-binding:latest
 email-ext:latest
-git:latest
 github-branch-source:latest
 gradle:latest
 ldap:latest
@@ -22,4 +21,3 @@ ssh-slaves:latest
 timestamper:latest
 workflow-aggregator:latest
 ws-cleanup:latest
-git:latest
